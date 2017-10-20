@@ -168,8 +168,35 @@ Lemma bubbleSort_once_ordena: forall l a, ordenada l -> ordenada (bubbleSort_onc
        ** apply one_ord.
        ** destruct (le_dec a a').
          *** exact l1.
-         *** admit.
+         *** apply Nat.lt_le_incl.
+             exact l0.
       *intros.
+       rewrite bubbleSort_once_equation.
+       destruct(le_lt_dec a' n).
+       **apply mult_ord.
+         ***assert(ordenada (bubbleSort_once (a' :: n :: l1))).
+            ****apply IHl.
+                inversion H.
+                exact H2.
+            ****rewrite bubbleSort_once_equation in H0.
+                destruct(le_lt_dec a' n).
+                {exact H0.
+                 }apply le_not_lt in l2.
+                contradiction.
+         *** apply Nat.lt_le_incl.
+             assumption.
+       **apply mult_ord.
+         ***assert(ordenada (bubbleSort_once (a' :: n :: l1))).
+            ****apply IHl.
+                inversion H.
+                exact H2.
+            ****rewrite bubbleSort_once_equation in H0.
+                destruct(le_lt_dec a' n).
+                {apply le_not_lt in l3.
+                 contradiction.
+                }exact H0.
+         *** inversion H.
+             assumption.
 Qed.
 
 (**Lema auxiliar que mostra a equivalência entre uma lista l e euma lista l', que é a lista retornada pela função auxiliar bubbleSort_once. *)
@@ -256,7 +283,7 @@ Proof.
     exact IHl.
 Qed.
     
-Theorem correcao_comp: forall (l:list nat), {l' | equiv l l' /\ ordenada l'}.
+Theorem correcao_comp: forall (l:list nat), {l' | equiv l' l /\ ordenada l'}.
 Proof.
   intro l.
   exists (bubbleSort l).
